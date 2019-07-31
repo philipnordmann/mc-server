@@ -1,0 +1,12 @@
+[Unit]
+Description=Minecraft docker container in version ##IMAGE_TAG##
+Requires=docker.service
+After=docker.service
+
+[Service]
+Restart=always
+ExecStart=/usr/bin/docker start -a minecraft-server-##IMAGE_TAG##
+ExecStop=/usr/bin/docker stop -t 2 minecraft-server-##IMAGE_TAG##
+
+[Install]
+WantedBy=default.target
