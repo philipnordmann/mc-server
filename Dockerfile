@@ -10,7 +10,7 @@ EXPOSE 25565
 RUN python3 -m venv /opt/minecraft/bin/downloader/venv
 RUN /bin/bash /opt/minecraft/bin/downloader/venv/bin/activate && pip3 install requests
 
-ARG MC_VERSION=latest
+ARG MC_VERSION=1.12.2
 
 COPY download_server_jar.py /opt/minecraft/bin/downloader/
 RUN /bin/bash /opt/minecraft/bin/downloader/venv/bin/activate && \
