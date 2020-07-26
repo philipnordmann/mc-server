@@ -1,4 +1,4 @@
-FROM debian:stable-slim
+FROM ubuntu:18.04
 
 RUN apt-get update -y && apt-get upgrade -y
 RUN apt-get install default-jre python3-pip python3-venv -y
