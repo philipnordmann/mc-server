@@ -22,4 +22,5 @@ deploy:
   provider: script
   script: 
     - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-    - make -e IMAGE_TAG=${IMAGE_TAG} publish
+    - docker push refractix/mc-server:${IMAGE_TAG}
+    - docker push refractix/mc-server:latest
