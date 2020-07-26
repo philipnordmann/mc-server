@@ -1,28 +1,28 @@
-import requests as r
+import requests
 import re
 import sys
 
-def get_server_download_urls():
-    url = 'https://mcversions.net/'
-    response = r.get(url)
 
-    if not response or response.status_code >= 400:
-        return None
+def get_server_download_url(version):
+    versions_url = 'https://launchermeta.mojang.com/mc/game/version_manifest.json'
 
-    page = str(response.content).replace('>', '>\n')
-    hits = re.findall(r'"https://.*/server.jar".*download="minecraft_server-.*.jar"', str(page))
+    r = requests.get(versions_url)
+    if r.status_code <= 399:
+        versions = r.json()
 
-    servers = list()
+        version_url = list(filter(lambda v: v['id'] == version, versions['versions']))[0]['url']
 
-    for hit in hits:
-        server_find = re.findall(r'"(.+?)"', hit)
-        servers.append({ 'version': server_find[2].replace('minecraft_server-','').replace('.jar', ''), 'url': server_find[0] })
-    return servers
+        s = requests.get(version_url)
+        if s.status_code <= 399:
+            server = s.json()['downloads']['server']
+            return server['url']
+
+    exit(1)
 
 def download_server_jar(path, url):
     file = path + '/server.jar'
     with open(file, 'wb') as server_file:
-        response = r.get(url)
+        response = requests.get(url)
         if response and response.status_code <= 399:
             server_file.write(response.content)
 
@@ -31,12 +31,12 @@ def main():
     path = sys.argv[2]
     version = sys.argv[1]
 
-    servers = get_server_download_urls()
-
     if version.lower() != 'latest':
-        url = list(filter(lambda server: server['version'] == version, servers))[0]['url']
+        url = get_server_download_url(version)
     else:
-        url = servers[0]['url']
+        from get_latest_version import get_latest_server_version
+        version = get_latest_server_version()
+        url = get_server_download_url(version)
 
     download_server_jar(path, url)
 

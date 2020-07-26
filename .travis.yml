@@ -1,0 +1,25 @@
+language: python
+
+python:
+  - "3.8"
+
+services:
+  - docker
+
+addons:
+  apt:
+    packages:
+    - cmake
+
+install:
+  - pip install -r requirements.txt
+
+script:
+  - IMAGE_TAG=$(python get_latest_version.py)
+  - make -e IMAGE_TAG=${IMAGE_TAG} build
+
+deploy:
+  provider: script
+  script: 
+    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+    - make publish

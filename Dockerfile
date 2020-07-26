@@ -7,12 +7,14 @@ RUN mkdir -p /opt/minecraft/etc/
 
 EXPOSE 25565
 
-RUN python3 -m venv /opt/minecraft/bin/downloader/venv
-RUN /bin/bash /opt/minecraft/bin/downloader/venv/bin/activate && pip3 install requests
-
 ARG MC_VERSION=latest
 
 COPY download_server_jar.py /opt/minecraft/bin/downloader/
+COPY requirements.txt /opt/minecraft/bin/downloader/
+
+RUN python3 -m venv /opt/minecraft/bin/downloader/venv
+RUN /bin/bash /opt/minecraft/bin/downloader/venv/bin/activate && pip install -r /opt/minecraft/bin/downloader/requirements.txt
+
 RUN /bin/bash /opt/minecraft/bin/downloader/venv/bin/activate && \
     python3 /opt/minecraft/bin/downloader/download_server_jar.py ${MC_VERSION} /opt/minecraft/bin
 
