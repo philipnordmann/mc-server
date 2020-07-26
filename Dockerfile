@@ -1,7 +1,7 @@
-FROM ubuntu:18.04
+FROM debian:stable-slim
 
 RUN apt-get update -y && apt-get upgrade -y
-RUN apt-get install curl default-jre python3-pip python3-venv -y
+RUN apt-get install default-jre python3-pip python3-venv -y
 RUN mkdir -p /opt/minecraft/bin/downloader
 RUN mkdir -p /opt/minecraft/etc/
 
@@ -12,11 +12,9 @@ ARG MC_VERSION=latest
 COPY download_server_jar.py /opt/minecraft/bin/downloader/
 COPY requirements.txt /opt/minecraft/bin/downloader/
 
-RUN python3 -m venv /opt/minecraft/bin/downloader/venv
-RUN /bin/bash /opt/minecraft/bin/downloader/venv/bin/activate && pip3 install -r /opt/minecraft/bin/downloader/requirements.txt
+RUN pip3 install -r /opt/minecraft/bin/downloader/requirements.txt
 
-RUN /bin/bash /opt/minecraft/bin/downloader/venv/bin/activate && \
-    python3 /opt/minecraft/bin/downloader/download_server_jar.py ${MC_VERSION} /opt/minecraft/bin
+RUN python3 /opt/minecraft/bin/downloader/download_server_jar.py ${MC_VERSION} /opt/minecraft/bin
 
 COPY start.sh /opt/minecraft/bin/
 
