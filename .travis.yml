@@ -22,4 +22,4 @@ deploy:
   provider: script
   script: 
     - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-    - make publish
+    - make -e IMAGE_TAG=${IMAGE_TAG} publish
